@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dummy chat with Socket.io</title>
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+  // connect the socket
+  var socket = io.connect("http://localhost:8080");
+
+  socket.on('message', function(message) {
+    console.log("Received:", message);
+    var messages = document.getElementById("messages");
+
+    messages.innerHTML += '<strong>[' + message.author + ']</strong> ' + message.text + '<br />';
+  })
+
+  function addMessage(e) {
+    var message = {
+      author: document.getElementById('author').value,
+      text: document.getElementById('text').value
+    };
+    console.log("Sent", message);
+
+    // enviar el mensaje
+    socket.emit('new-message', message);
+    return false;
+  }
+
+</script>
+
+<body>
+
+  <h1>Dummy chat with Socket.io</h1>
+
+  <form onsubmit="return addMessage(this)">
+    <input type="text" id="author" placeholder="Your name" >
+    <input type="text" id="text" placeholder="Tell something...">
+    <input type="submit" value="Send!">
+  </form>
+
+  <p id="messages"></p>
+
+</body>
+</html>
